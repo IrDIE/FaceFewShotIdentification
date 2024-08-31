@@ -42,7 +42,7 @@ if img_file_buffer is not None:
 
 
 
-image = camera_input_live()
+image = camera_input_live(height = 280, width=200, debounce=100)
 
 if image is not None:
     st.image(image)
