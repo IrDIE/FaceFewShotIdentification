@@ -1,8 +1,32 @@
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
-
+import dlib
 import cv2
 import numpy as np
+
+
+
+def face_points_callback(frame):
+    frame = frame.to_ndarray(format="bgr24")
+    predictor_path = './pretrained_models/shape_predictor_68_face_landmarks.dat'
+    predictor = dlib.shape_predictor(predictor_path)
+    img_shape = frame.shape
+    points_face = []
+
+    det = dlib.rectangle(left=0, top=0, right=img_shape[1], bottom=img_shape[0])
+    shape = predictor(frame, det)
+    for i in range(68):
+        point_x, point_y  = shape.part(i).x, shape.part(i).y
+        points_face.append([point_x, point_y])
+
+
+    for i, point in enumerate(points_face):
+        point = list(map(int, point))
+        color = (227, 68, 100)
+        if i == 30:
+            color = (0, 255, 0)
+        frame = cv2.circle(frame, point, radius=2, color=color, thickness=-1)
+
 
 webrtc_stream = webrtc_streamer(key="example2"
                     , rtc_configuration=
@@ -30,7 +54,7 @@ webrtc_stream = webrtc_streamer(key="example2"
                     )
 
 st.button("Add person")
-uploaded_image = st.file_uploader("Choose a image")
+uploaded_image = st.file_uploader("Choose a image", accept_multiple_files=True)
 if uploaded_image is not None:
     bytes_image = uploaded_image.getvalue()
     st.write(bytes_image)
