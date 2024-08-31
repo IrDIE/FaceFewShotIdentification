@@ -1,10 +1,10 @@
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer
-from camera_input_live import camera_input_live
+
 import cv2
 import numpy as np
 
-c = webrtc_streamer(key="example2"
+webrtc_stream = webrtc_streamer(key="example2"
                     , rtc_configuration=
                     {
                         "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
@@ -30,32 +30,17 @@ c = webrtc_streamer(key="example2"
                     )
 
 st.button("Add person")
+uploaded_image = st.file_uploader("Choose a image")
+if uploaded_image is not None:
+    bytes_image = f.getvalue()
+    st.write(bytes_image)
 
-img_file_buffer = st.camera_input("Take a picture")
+# img_file_buffer = st.camera_input("Take a picture")
 
-if img_file_buffer is not None:
-    # To read image file buffer as bytes:
-    bytes_data = img_file_buffer.getvalue()
-    # Check the type of bytes_data:
-    # Should output: <class 'bytes'>
-    st.write(type(bytes_data))
+# if img_file_buffer is not None:
+#     # To read image file buffer as bytes:
+#     bytes_data = img_file_buffer.getvalue()
+#     # Check the type of bytes_data:
+#     # Should output: <class 'bytes'>
+#     st.write(type(bytes_data))
 
-
-
-image = camera_input_live(height = 280, width=200, debounce=100)
-
-if image is not None:
-    st.image(image)
-    bytes_data = image.getvalue()
-    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
-
-    detector = cv2.QRCodeDetector()
-
-    data, bbox, straight_qrcode = detector.detectAndDecode(cv2_img)
-
-    if data:
-        st.write("# Found QR code")
-        st.write(data)
-        with st.expander("Show details"):
-            st.write("BBox:", bbox)
-            st.write("Straight QR code:", straight_qrcode)
