@@ -2,6 +2,8 @@ import streamlit as st
 from streamlit_webrtc import webrtc_streamer
 from camera_input_live import camera_input_live
 import cv2
+import numpy as np
+
 c = webrtc_streamer(key="example2"
                     , rtc_configuration=
                     {
