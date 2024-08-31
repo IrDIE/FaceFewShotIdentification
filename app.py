@@ -32,7 +32,7 @@ webrtc_stream = webrtc_streamer(key="example2"
 st.button("Add person")
 uploaded_image = st.file_uploader("Choose a image")
 if uploaded_image is not None:
-    bytes_image = f.getvalue()
+    bytes_image = uploaded_image.getvalue()
     st.write(bytes_image)
 
 # img_file_buffer = st.camera_input("Take a picture")
